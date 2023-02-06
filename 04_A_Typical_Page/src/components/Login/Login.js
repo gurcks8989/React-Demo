@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useReducer, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useReducer,
+  useContext,
+  useRef,
+} from "react";
 import AuthContext from "../../store/auth-context";
 
 import Card from "../UI/Card/Card";
@@ -39,15 +45,17 @@ const Login = () => {
 
   const authCtx = useContext(AuthContext);
 
+  const emailInputRef = useRef();
+  const passwordInputRef = useRef();
+
   const [formIsValid, setFormIsValid] = useState(false);
 
   const { isValid: emailIsValid } = emailState;
   const { isValid: passwordIsValid } = passwordState;
 
-
   useEffect(() => {
-    console.log("Test") ;
-  }) ;
+    console.log("Test");
+  });
 
   useEffect(() => {
     const identifier = setTimeout(() => {
@@ -83,15 +91,20 @@ const Login = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    if (formIsValid){
-    authCtx.onLogin(emailState.value, passwordState.value);
-  }
+    if (formIsValid) {
+      authCtx.onLogin(emailState.value, passwordState.value);
+    } else if (!emailIsValid) {
+      emailInputRef.current.activate() ;
+    } else {
+      passwordInputRef.current.activate() ;
+    }
   };
 
   return (
     <Card className={classes.login}>
       <form onSubmit={submitHandler}>
         <Input
+          ref={emailInputRef}
           isValid={emailState.isValid}
           type="email"
           id="email"
@@ -102,6 +115,7 @@ const Login = () => {
           E-Mail
         </Input>
         <Input
+          ref={passwordInputRef}
           isValid={passwordState.isValid}
           type="password"
           id="password"
@@ -109,10 +123,10 @@ const Login = () => {
           onChange={passwordChangeHandler}
           onBlur={validatePasswordHandler}
         >
-          E-Mail
+          Password
         </Input>
         <div className={classes.actions}>
-          <Button type="submit" className={classes.btn} >
+          <Button type="submit" className={classes.btn}>
             Login
           </Button>
         </div>

@@ -1,15 +1,21 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useImperativeHandle } from "react";
 
 import classes from "./Input.module.css";
 
 const randomId = Math.random();
 
-const Input = (props) => {
+const Input = React.forwardRef((props, ref) => {
   const inputRef = useRef();
 
-  useEffect(() => {
-    inputRef.current.focus() ;
-  }, []) ;
+  const activate = () => {
+    inputRef.current.focus();
+  };
+
+  useImperativeHandle(ref, () => {
+    return {
+      activate: activate,
+    };
+  });
 
   return (
     <div
@@ -28,6 +34,6 @@ const Input = (props) => {
       />
     </div>
   );
-};
+});
 
 export default Input;
