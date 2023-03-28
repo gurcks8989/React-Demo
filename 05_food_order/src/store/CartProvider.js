@@ -7,7 +7,7 @@ const defaultCartState = {
   totalAmount: 0,
 };
 
-const carReducer = (state, action) => {
+const cartReducer = (state, action) => {
   if (action.type === "ADD_ITEM") {
     const existingCartItemIndex = state.items.findIndex(
       (item) => item.id === action.item.id
@@ -56,7 +56,7 @@ const carReducer = (state, action) => {
 
 const CartProvider = (props) => {
   const [cartState, dispatchCartAction] = useReducer(
-    carReducer,
+    cartReducer,
     defaultCartState
   );
 
@@ -68,11 +68,16 @@ const CartProvider = (props) => {
     dispatchCartAction({ type: "REMOVE_ITEM", id: id });
   };
 
+  const resetFromCartHandler = (id) => {
+    dispatchCartAction({ type: "RESET" });
+  };
+
   const cartContext = {
     items: cartState.items,
     totalAmount: cartState.totalAmount,
     addItem: addItemToCartHandler,
     removeItem: removeItemFromCartHandler,
+    reset: resetFromCartHandler,
   };
 
   return (
